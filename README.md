@@ -56,6 +56,33 @@ If you uploaded your Docker image to the Docker Hub:
     image: USERNAME/locust:latest
 
 **Note:** the image location includes the `latest` tag so that the image is pulled down every time a new Pod is launched. To use a Kubernetes-cached copy of the image, remove `:latest` from the image location.
+### Testing Locust locally
+
+Locust can be tested locally using `docker-compose` as follows:
+
+1. Start master and worker:
+
+   ```
+   docker-compose -p locust-test up -d
+   ```
+
+2. Verify master and worker logs:
+
+   ```
+   docker-compose -p locust-test logs
+   ```
+
+3. Open web console:
+
+   ```
+   open localhost:8089
+   ```
+
+Shutting down local test.
+
+```
+docker-compose -p locust-test stop
+```
 
 ### Deploy Kubernetes Cluster
 
