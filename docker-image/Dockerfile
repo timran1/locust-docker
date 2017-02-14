@@ -13,23 +13,24 @@
 # limitations under the License.
 
 
-# Start with a base Python 2.7.8 image
-FROM python:2.7.8
+# Start with a base Python 2.7 alpine image
+FROM python:2.7-alpine
 
-# Add the licenses for third party software and libraries
-COPY licenses /licenses
+COPY requirements.txt requirements.txt
+RUN apk --no-cache add --virtual=.build-dep \
+      build-base \
+    && apk --no-cache add bash libzmq \
+    && pip install -r requirements.txt \
+    && apk del .build-dep
 
-# Add the external tasks directory into /tasks
-COPY locust-tasks /locust-tasks
+# COPY licenses, sample tasks and entrypoint into root
+COPY app /
 
-# Install the required dependencies via pip
-RUN pip install -r /locust-tasks/requirements.txt
+# Set script to be executable
+RUN chmod 755 /entrypoint.sh
 
 # Expose the required Locust ports
 EXPOSE 5557 5558 8089
 
-# Set script to be executable
-RUN chmod 755 /locust-tasks/run.sh
-
 # Start Locust using LOCUS_OPTS environment variable
-ENTRYPOINT ["/locust-tasks/run.sh"] 
+ENTRYPOINT ["/entrypoint.sh"] 
