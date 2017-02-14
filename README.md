@@ -1,11 +1,14 @@
 ## Distributed Load Testing Using Kubernetes
 
+[![Docker Repository on Quay](https://quay.io/repository/honestbee/locust/status "Docker Repository on Quay")](https://quay.io/repository/honestbee/locust)
+
 This tutorial demonstrates how to conduct distributed load testing using [Kubernetes](http://kubernetes.io) and includes a sample web application, Docker image, and Kubernetes controllers/services. For more background refer to the [Distributed Load Testing Using Kubernetes](http://cloud.google.com/solutions/distributed-load-testing-using-kubernetes) solution paper.
 
 ## Prerequisites
 
 * Google Cloud Platform account
 * Install and setup [Google Cloud SDK](https://cloud.google.com/sdk/)
+* Install and setup [Helm](https://github.com/kubernetes/helm)
 
 **Note:** when installing the Google Cloud SDK you will need to enable the following additional components:
 
@@ -32,25 +35,25 @@ The `sample-webapp` folder contains a simple Google App Engine Python applicatio
 
 ### Update Controller Docker Image (Optional)
 
-The `locust-master` and `locust-worker` controllers are set to use the pre-built `locust-tasks` Docker image, which has been uploaded to [Quay Registry](https://quay.io/repository/honestbee/locust) and is available at `quay.io/honestbee/locust`. If you are interested in making changes and publishing a new Docker image, refer to the following steps.
+The `locust-master` and `locust-worker` Deployments are set to use the pre-built `locust` Docker image, which has been uploaded to [Quay Registry](https://quay.io/repository/honestbee/locust) and is available at `quay.io/honestbee/locust`. If you are interested in making changes and publishing a new Docker image, refer to the following steps.
 
 First, [install Docker](https://docs.docker.com/installation/#installation) on your platform. Once Docker is installed and you've made changes to the `Dockerfile`, you can build, tag, and upload the image using the following steps:
 
-    $ docker build -t USERNAME/locust-tasks .
-    $ docker tag USERNAME/locust-tasks gcr.io/PROJECT-ID/locust-tasks
-    $ gcloud preview docker --project PROJECT-ID push gcr.io/PROJECT-ID/locust-tasks
+    $ docker build -t USERNAME/locust .
+    $ docker tag USERNAME/locust gcr.io/PROJECT-ID/locust
+    $ gcloud preview docker --project PROJECT-ID push gcr.io/PROJECT-ID/locust
 
 **Note:** you are not required to use the Google Container Registry. If you'd like to publish your images to the [Docker Hub](https://hub.docker.com) please refer to the steps in [Working with Docker Hub](https://docs.docker.com/userguide/dockerrepos/).
 
-Once the Docker image has been rebuilt and uploaded to the registry you will need to edit the controllers with your new image location. Specifically, the `spec.template.spec.containers.image` field in each controller controls which Docker image to use.
+Once the Docker image has been rebuilt and uploaded to the registry you will need to specify your new image location for the helm chart. Specifically, the `image.repository` field of the helm chart which Docker image to use.
 
 If you uploaded your Docker image to the Google Container Registry:
 
-    image: gcr.io/PROJECT-ID/locust-tasks:latest
+    image: gcr.io/PROJECT-ID/locust:latest
 
 If you uploaded your Docker image to the Docker Hub:
 
-    image: USERNAME/locust-tasks:latest
+    image: USERNAME/locust:latest
 
 **Note:** the image location includes the `latest` tag so that the image is pulled down every time a new Pod is launched. To use a Kubernetes-cached copy of the image, remove `:latest` from the image location.
 
@@ -87,7 +90,7 @@ The `locust-worker-controller` is set to deploy 1 `locust-worker` Pods, to confi
 
 To scale the number of `locust-worker` Pods, issue a replication controller `scale` command.
 
-    $ kubectl scale --replicas=20 replicationcontrollers locust-worker
+    $ kubectl scale --replicas=20 deployment locust-worker
 
 To confirm that the Pods have launched and are ready, get the list of `locust-worker` Pods:
 
