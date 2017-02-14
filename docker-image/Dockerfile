@@ -16,13 +16,11 @@
 # Start with a base Python 2.7.8 image
 FROM python:2.7.8
 
-MAINTAINER Sandeep Parikh <parikhs@google.com>
-
 # Add the licenses for third party software and libraries
-ADD licenses /licenses
+COPY licenses /licenses
 
 # Add the external tasks directory into /tasks
-ADD locust-tasks /locust-tasks
+COPY locust-tasks /locust-tasks
 
 # Install the required dependencies via pip
 RUN pip install -r /locust-tasks/requirements.txt
