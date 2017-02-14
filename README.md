@@ -30,17 +30,9 @@ The `sample-webapp` folder contains a simple Google App Engine Python applicatio
 
 **Note:** you will need the URL of the deployed sample web application when deploying the `locust-master` and `locust-worker` controllers.
 
-## Deploy Controllers and Services
-
-Before deploying the `locust-master` and `locust-worker` controllers, update each to point to the location of your deployed sample web application. Set the `TARGET_HOST` environment variable found in the `spec.template.spec.containers.env` field to your sample web application URL.
-
-    - name: TARGET_HOST
-      key: TARGET_HOST
-      value: http://PROJECT-ID.appspot.com
-
 ### Update Controller Docker Image (Optional)
 
-The `locust-master` and `locust-worker` controllers are set to use the pre-built `locust-tasks` Docker image, which has been uploaded to the [Google Container Registry](http://gcr.io) and is available at `gcr.io/cloud-solutions-images/locust-tasks`. If you are interested in making changes and publishing a new Docker image, refer to the following steps.
+The `locust-master` and `locust-worker` controllers are set to use the pre-built `locust-tasks` Docker image, which has been uploaded to [Quay Registry](https://quay.io/repository/honestbee/locust) and is available at `quay.io/honestbee/locust`. If you are interested in making changes and publishing a new Docker image, refer to the following steps.
 
 First, [install Docker](https://docs.docker.com/installation/#installation) on your platform. Once Docker is installed and you've made changes to the `Dockerfile`, you can build, tag, and upload the image using the following steps:
 
@@ -76,32 +68,20 @@ After a few minutes, you'll have a working Kubernetes cluster with three nodes (
 
 **Note:** the output from the previous `gcloud` cluster create command will contain the specific `kubectl config` command to execute for your platform/project.
 
-### Deploy locust-master
+## Deploy Controllers and Services
 
-Now that `kubectl` is setup, deploy the `locust-master-controller`:
+Using [Helm](github.com/kubernetes/helm) to deploy locust, pass in your sample web application URL via the `master.config.target-host` key:
 
-    $ kubectl create -f locust-master-controller.yaml
-
-To confirm that the Replication Controller and Pod are created, run the following:
-
-    $ kubectl get rc
-    $ kubectl get pods -l name=locust,role=master
-
-Next, deploy the `locust-master-service`:
-
-    $ kubectl create -f locust-master-service.yaml
-
+```
+helm install stable/locust -n locust-nymph --set master.config.target-host=http://PROJECT-ID.appspot.com
+```
 This step will expose the Pod with an internal DNS name (`locust-master`) and ports `8089`, `5557`, and `5558`. As part of this step, the `type: LoadBalancer` directive in `locust-master-service.yaml` will tell Google Container Engine to create a Google Compute Engine forwarding-rule from a publicly avaialble IP address to the `locust-master` Pod. To view the newly created forwarding-rule, execute the following:
 
     $ gcloud compute forwarding-rules list 
 
-### Deploy locust-worker
+### Scaling locust-worker
 
-Now deploy `locust-worker-controller`:
-
-    $ kubectl create -f locust-worker-controller.yaml
-
-The `locust-worker-controller` is set to deploy 10 `locust-worker` Pods, to confirm they were deployed run the following:
+The `locust-worker-controller` is set to deploy 1 `locust-worker` Pods, to confirm they were deployed run the following:
 
     $ kubectl get pods -l name=locust,role=worker
 
