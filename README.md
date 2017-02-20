@@ -1,8 +1,10 @@
-## Distributed Load Testing Using Kubernetes
+## Distributed Load Testing Using Kubernetes [![Docker Repository on Quay](https://quay.io/repository/honestbee/locust/status "Docker Repository on Quay")](https://quay.io/repository/honestbee/locust)
 
-[![Docker Repository on Quay](https://quay.io/repository/honestbee/locust/status "Docker Repository on Quay")](https://quay.io/repository/honestbee/locust)
+This tutorial demonstrates how to conduct distributed load testing using [Kubernetes](http://kubernetes.io) and includes a sample web application, Docker image, and Docker Compose file.
 
-This tutorial demonstrates how to conduct distributed load testing using [Kubernetes](http://kubernetes.io) and includes a sample web application, Docker image, and Kubernetes controllers/services. For more background refer to the [Distributed Load Testing Using Kubernetes](http://cloud.google.com/solutions/distributed-load-testing-using-kubernetes) solution paper.
+To deploy Locust to your Kubernetes cluster, use the [Helm Chart](https://github.com/honestbee/public-charts/tree/locust-0.1.0/incubator/locust)
+
+For more background refer to the [Distributed Load Testing Using Kubernetes](http://cloud.google.com/solutions/distributed-load-testing-using-kubernetes) solution paper.
 
 ## Prerequisites
 
@@ -63,25 +65,31 @@ Locust can be tested locally using `docker-compose` as follows:
 1. Start master and worker:
 
    ```
-   docker-compose -p locust-test up -d
+   docker-compose -p locust up -d
    ```
 
-2. Verify master and worker logs:
+1. Verify master and worker logs:
 
    ```
-   docker-compose -p locust-test logs
+   docker-compose -p locust logs
    ```
 
-3. Open web console:
+1. Open web console:
 
    ```
    open localhost:8089
    ```
 
+1. Scale up workers:
+
+   ```
+   docker-compose -p locust scale worker=4
+   ```
+
 Shutting down local test.
 
 ```
-docker-compose -p locust-test stop
+docker-compose -p locust stop
 ```
 
 ### Deploy Kubernetes Cluster
