@@ -17,6 +17,7 @@ services:
         environment:
             - "LOCUST_MODE=worker"
             - "LOCUST_MASTER=master"
+            - "LOCUST_MASTER_WEB=8089"
             - "TARGET_HOST=http://site.example.com"
             - "LOCUST_SCRIPT=/locust-tasks/tasks_elb.py"
         volumes:
