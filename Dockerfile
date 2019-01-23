@@ -13,8 +13,8 @@
 # limitations under the License.
 
 
-# Start with a base Python 2.7 alpine image
-FROM python:2.7-alpine
+# Start with a base Python 3.7 alpine image
+FROM python:3.7-alpine
 
 COPY requirements.txt requirements.txt
 RUN apk --no-cache add --virtual=.build-dep \
