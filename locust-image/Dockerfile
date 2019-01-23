@@ -13,28 +13,24 @@
 # limitations under the License.
 
 
-kind: Service
-apiVersion: v1
-metadata:
-  name: locust-master
-  labels:
-    name: locust
-    role: master
-spec:
-  ports:
-    - port: 8089
-      targetPort: loc-master-web
-      protocol: TCP
-      name: loc-master-web
-    - port: 5557
-      targetPort: loc-master-p1
-      protocol: TCP
-      name: loc-master-p1
-    - port: 5558
-      targetPort: loc-master-p2
-      protocol: TCP
-      name: loc-master-p2
-  selector:
-    name: locust
-    role: master
-  type: LoadBalancer
+# Start with a base Python 2.7 alpine image
+FROM python:2.7-alpine
+
+COPY requirements.txt requirements.txt
+RUN apk --no-cache add --virtual=.build-dep \
+      build-base \
+    && apk --no-cache add bash libzmq \
+    && pip install -r requirements.txt \
+    && apk del .build-dep
+
+# COPY licenses, sample tasks and entrypoint into root
+COPY app /
+
+# Set script to be executable
+RUN chmod 755 /entrypoint.sh
+
+# Expose the required Locust ports
+EXPOSE 5557 5558 8089
+
+# Start Locust using LOCUS_OPTS environment variable
+ENTRYPOINT ["/entrypoint.sh"] 

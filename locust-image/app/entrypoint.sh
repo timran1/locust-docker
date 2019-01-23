@@ -14,17 +14,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#bail on fail
+set -eo pipefail
 
-LOCUST="/usr/local/bin/locust"
-LOCUS_OPTS="-f /locust-tasks/tasks.py --host=$TARGET_HOST"
+LOCUST=( "/usr/local/bin/locust" )
+
+LOCUST+=( -f ${LOCUST_SCRIPT:-/locust-tasks/tasks.py} )
+LOCUST+=( --host=$TARGET_HOST )
+
 LOCUST_MODE=${LOCUST_MODE:-standalone}
-
 if [[ "$LOCUST_MODE" = "master" ]]; then
-    LOCUS_OPTS="$LOCUS_OPTS --master"
+    LOCUST+=( --master)
 elif [[ "$LOCUST_MODE" = "worker" ]]; then
-    LOCUS_OPTS="$LOCUS_OPTS --slave --master-host=$LOCUST_MASTER"
+    LOCUST+=( --slave --master-host=$LOCUST_MASTER)
+    # wait for master
+    while ! wget -sqT5 $LOCUST_MASTER:$LOCUST_MASTER_WEB >/dev/null 2>&1; do
+        echo "Waiting for master"
+        sleep 5
+    done
 fi
 
-echo "$LOCUST $LOCUS_OPTS"
+echo "${LOCUST[@]}"
 
-$LOCUST $LOCUS_OPTS
+#replace bash, let locust handle signals
+exec ${LOCUST[@]}
