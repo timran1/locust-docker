@@ -1,38 +1,29 @@
-version: '2'
+version: '3'
 services:
     master:
-        image: quay.io/honestbee/locust
+        image: greenbirdit/locust:0.9.0
         environment:
             - "LOCUST_MODE=master"
             - "TARGET_HOST=http://site.example.com"
-            - "LOCUST_SCRIPT=/locust-tasks/tasks_elb.py"
+            - "LOCUST_SCRIPT=/locust-tasks/tasks.py"
         volumes:
-            - ./locust-image/app/locust-tasks/tasks_elb.py:/locust-tasks/tasks_elb.py
+            - ./app/locust-tasks/tasks.py:/locust-tasks/tasks.py
         networks:
             locust-nw:
         ports:
             - "8089:8089"
     worker:
-        image: quay.io/honestbee/locust
+        image: greenbirdit/locust:0.9.0
         environment:
             - "LOCUST_MODE=worker"
             - "LOCUST_MASTER=master"
             - "LOCUST_MASTER_WEB=8089"
             - "TARGET_HOST=http://site.example.com"
-            - "LOCUST_SCRIPT=/locust-tasks/tasks_elb.py"
+            - "LOCUST_SCRIPT=/locust-tasks/tasks.py"
         volumes:
-            - ./locust-image/app/locust-tasks/tasks_elb.py:/locust-tasks/tasks_elb.py
+            - ./app/locust-tasks/tasks.py:/locust-tasks/tasks.py
         networks:
             locust-nw:
-
-    # seeder:
-    #     image: quay.io/locust-seeder:1.0.5
-    #     networks:
-    #         locust-nw:
-    #             aliases:
-    #                 - locust-seeder
-    #     expose:
-    #         - 5000
 
 networks:
     locust-nw:

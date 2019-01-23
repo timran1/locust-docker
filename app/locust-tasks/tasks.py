@@ -14,29 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-import uuid
-
-from datetime import datetime
 from locust import HttpLocust, TaskSet, task
 
-
-class MetricsTaskSet(TaskSet):
-    _deviceid = None
-
-    def on_start(self):
-        self._deviceid = str(uuid.uuid4())
-
+class ElbTasks(TaskSet):
     @task(1)
-    def login(self):
-        self.client.post(
-            '/login', {"deviceid": self._deviceid})
+    def status(self):
+        self.client.get("/")
 
-    @task(999)
-    def post_metrics(self):
-        self.client.post(
-            "/metrics", {"deviceid": self._deviceid, "timestamp": datetime.now()})
-
-
-class MetricsLocust(HttpLocust):
-    task_set = MetricsTaskSet
+class ElbWarmer(HttpLocust):
+    task_set = ElbTasks
+    min_wait = 1000
+    max_wait = 3000
