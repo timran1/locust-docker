@@ -1,3 +1,4 @@
 locustio==0.9.0
 pyzmq==17.1.2
 statsd==3.3.0
+locust-fixed-interval==0.1
