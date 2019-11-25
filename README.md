@@ -1,5 +1,7 @@
 ## Locust for Kubernetes
 
+[![CircleCI](https://circleci.com/gh/greenbird/locust.svg?style=svg)](https://circleci.com/gh/greenbird/locust)
+
 This reporitory is forked from the tutorial from Google on how to conduct distributed load testing using [Kubernetes](http://kubernetes.io).
 We have removed the sample webapp and will only be focusing on maintaining an up to date Locust image for use in Helm Charts and other Kubernetes deployments.
 
