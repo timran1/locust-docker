@@ -7,6 +7,7 @@ workflows:
   build-master-branch:
     jobs:
       - docker/publish:
+          name: publish-latest
           context: docker-hub
           image: greenbirdit/locust
           tag: latest
@@ -17,6 +18,7 @@ workflows:
   build-release-tags:
     jobs:
       - docker/publish:
+          name: publish-release-tag
           context: docker-hub
           image: greenbirdit/locust
           tag: $CIRCLE_TAG
