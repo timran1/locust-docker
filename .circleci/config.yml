@@ -1,0 +1,12 @@
+version: 2.1
+
+orbs:
+  docker: circleci/docker@0.5.18
+
+workflows:
+  build-master-branch:
+    jobs:
+      - docker/publish:
+          context: docker-hub
+          image: greenbirdit/locust
+          tag: latest
