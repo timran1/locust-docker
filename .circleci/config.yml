@@ -10,3 +10,18 @@ workflows:
           context: docker-hub
           image: greenbirdit/locust
           tag: latest
+          filters:
+            branches:
+              only: master
+
+  build-release-tags:
+    jobs:
+      - docker/publish:
+          context: docker-hub
+          image: greenbirdit/locust
+          tag: $CIRCLE_TAG
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /[0-9]+\.[0-9]+\.[0-9]+/
