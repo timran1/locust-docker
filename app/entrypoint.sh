@@ -24,7 +24,7 @@ LOCUST+=( --host=$TARGET_HOST )
 
 LOCUST_MODE=${LOCUST_MODE:-standalone}
 if [[ "$LOCUST_MODE" = "master" ]]; then
-    LOCUST+=( --master)
+    LOCUST+=( --master --csv=locust)
 elif [[ "$LOCUST_MODE" = "worker" ]]; then
     LOCUST+=( --slave --master-host=$LOCUST_MASTER)
     # wait for master
