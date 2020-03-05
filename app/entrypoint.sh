@@ -26,9 +26,9 @@ LOCUST_MODE=${LOCUST_MODE:-standalone}
 if [[ "$LOCUST_MODE" = "master" ]]; then
     LOCUST+=( --master --csv=locust)
 elif [[ "$LOCUST_MODE" = "worker" ]]; then
-    LOCUST+=( --slave --master-host=$LOCUST_MASTER)
+    LOCUST+=( --slave --master-host=$LOCUST_MASTER_HOST)
     # wait for master
-    while ! wget --spider -qT5 $LOCUST_MASTER:$LOCUST_MASTER_WEB >/dev/null 2>&1; do
+    while ! wget --spider -qT5 $LOCUST_MASTER_HOST:$LOCUST_MASTER_WEB >/dev/null 2>&1; do
         echo "Waiting for master"
         sleep 5
     done

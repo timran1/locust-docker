@@ -16,7 +16,7 @@ services:
         image: timran1/locust:latest
         environment:
             - "LOCUST_MODE=worker"
-            - "LOCUST_MASTER=master"
+            - "LOCUST_MASTER_HOST=master"
             - "LOCUST_MASTER_WEB=8089"
             - "TARGET_HOST=http://site.example.com"
             - "LOCUST_SCRIPT=/locust-tasks/tasks.py"
