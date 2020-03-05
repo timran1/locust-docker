@@ -1,7 +1,7 @@
 version: '3'
 services:
     master:
-        image: timran1/locust-fixed-interval:latest
+        image: timran1/locust:latest
         environment:
             - "LOCUST_MODE=master"
             - "TARGET_HOST=http://site.example.com"
@@ -13,7 +13,7 @@ services:
         ports:
             - "8089:8089"
     worker:
-        image: timran1/locust-fixed-interval:latest
+        image: timran1/locust:latest
         environment:
             - "LOCUST_MODE=worker"
             - "LOCUST_MASTER=master"
