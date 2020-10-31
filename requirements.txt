@@ -8,3 +8,4 @@ docutils==0.16
 boto3==1.7.73
 plumb==1.2.5
 redis==2.10.6
+pykafka==2.8.0
