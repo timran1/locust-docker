@@ -13,14 +13,14 @@
 # limitations under the License.
 
 
-# Start with a base Python 3.7 alpine image
-FROM python:3.6-alpine
+# Start with a base Python 3.8 alpine image
+FROM python:3.8-alpine
 
 COPY requirements.txt requirements.txt
 RUN apk --no-cache add --virtual=.build-dep \
       build-base \
     && apk --no-cache add bash git openssh g++ zeromq-dev libffi-dev librdkafka-dev \
-    && pip install -r requirements.txt --use-feature=2020-resolver \
+    && pip install -r requirements.txt \
     && apk del .build-dep
 
 # COPY licenses, sample tasks and entrypoint into root
