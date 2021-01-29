@@ -1,5 +1,5 @@
 # locustio==0.14.6
 git+git://github.com/timran1/locust.git@master#egg=locust
-boto3==1.7.73
+boto3==1.16.62
 redis==2.10.6
 pykafka==2.8.0
